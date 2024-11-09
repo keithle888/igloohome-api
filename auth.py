@@ -2,21 +2,21 @@ import aiohttp
 import jwt
 
 OAUTH2_TOKEN_URL = "https://auth.igloohome.co/oauth2/token"
-OAUTH2_SCOPE = "igloohomeapi/algopin-hourly"
 
 
 class Auth:
-    def __init__(self, session: aiohttp.ClientSession, host: str, client_id: str, client_secret: str):
+    def __init__(self, session: aiohttp.ClientSession, host: str, scope: str, client_id: str, client_secret: str):
         self.access_token = None
         self.session = session
         self.client_id = client_id
         self.client_secret = client_secret
         self.host = host
+        self.scope = scope
 
     async def async_get_access_token(self) -> str:
         form = aiohttp.FormData()
         form.add_field("grant_type", "client_credentials")
-        form.add_field("scope", OAUTH2_SCOPE)
+        form.add_field("scope", self.scope)
         response = await self.session.post(
             url=OAUTH2_TOKEN_URL,
             auth=aiohttp.BasicAuth(
@@ -50,7 +50,8 @@ class Auth:
         else:
             headers = dict(headers)
 
-        headers["authorization"] = await self.async_get_valid_access_token()
+        headers["Authorization"] = f"Bearer {await self.async_get_valid_access_token()}"
+        headers["Accept"] = "application/json"
 
         return await self.session.request(
             method, f"{self.host}/{path}", **kwargs, headers=headers,
