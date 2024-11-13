@@ -29,6 +29,7 @@ class GetDeviceInfoResponse:
     pairedAt: str
     homeId: list[str]
     linkedDevices: list[LinkedDevice]
+    batteryLevel: int
 
 
 @dataclass
