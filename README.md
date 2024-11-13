@@ -9,7 +9,7 @@ An account on the iglooaccess portal needs to be created to get a `client_id` & 
 
 ### Authentication
 ```python
-from igloohome-api import Auth
+from igloohome_api import Auth
 from aiohttp import ClientSession
 
 session = ClientSession()
@@ -22,6 +22,8 @@ auth = Auth(
 
 ### API usage
 ```python
+from igloohome_api import Api
+
 api = Api(auth)
 
 devices = await api.get_devices()
