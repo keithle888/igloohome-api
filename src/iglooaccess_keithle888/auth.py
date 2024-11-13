@@ -1,11 +1,19 @@
 import aiohttp
 import jwt
 
-OAUTH2_TOKEN_URL = "https://auth.igloohome.co/oauth2/token"
+_OAUTH2_HOST = "https://auth.igloohome.co"
+_OAUTH2_TOKEN_PATH = "/oauth2/token"
 
 
 class Auth:
-    def __init__(self, session: aiohttp.ClientSession, host: str, scope: str, client_id: str, client_secret: str):
+    def __init__(
+            self,
+            session: aiohttp.ClientSession,
+            scope: str,
+            client_id: str,
+            client_secret: str,
+            host: str = _OAUTH2_HOST,
+    ) -> None:
         self.access_token = None
         self.session = session
         self.client_id = client_id
@@ -18,7 +26,7 @@ class Auth:
         form.add_field("grant_type", "client_credentials")
         form.add_field("scope", self.scope)
         response = await self.session.post(
-            url=OAUTH2_TOKEN_URL,
+            url=self.host + _OAUTH2_TOKEN_PATH,
             auth=aiohttp.BasicAuth(
                 login=self.client_id, password=self.client_secret
             ),
@@ -41,7 +49,7 @@ class Auth:
         else:
             return await self.async_get_access_token()
 
-    async def request(self, method: str, path: str, **kwargs) -> aiohttp.ClientResponse:
+    async def request(self, method: str, url: str, **kwargs) -> aiohttp.ClientResponse:
         """Make a request."""
         headers = kwargs.get("headers")
 
@@ -54,7 +62,7 @@ class Auth:
         headers["Accept"] = "application/json"
 
         return await self.session.request(
-            method, f"{self.host}/{path}", **kwargs, headers=headers,
+            method, url, **kwargs, headers=headers,
         )
 
 

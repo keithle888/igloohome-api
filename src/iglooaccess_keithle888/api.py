@@ -1,57 +1,34 @@
+import json
+
 import aiohttp
+from dacite import from_dict
 
-from auth import Auth
+from src.iglooaccess_keithle888.auth import Auth
+from src.iglooaccess_keithle888.models.get_devices_response import GetDevicesResponse
 
-BASE_PATH = "igloohome"
-DEVICES_PATH_SEGMENT = "devices"
-DEVICES_PATH = BASE_PATH + "/" + DEVICES_PATH_SEGMENT
-ALGOPIN_PATH_SEGMENT = "algopin"
+_BASE_URL = "https://api.igloodeveloper.co"
+_BASE_PATH = "igloohome"
+_DEVICES_PATH_SEGMENT = "devices"
 
 
 class Api:
-    def __init__(self, auth: Auth):
+    def __init__(
+            self,
+            auth: Auth,
+            host: str = _BASE_URL
+    ):
         self.auth = auth
+        self.host = host
 
-    async def get_devices(self):
+    async def get_devices(self) -> GetDevicesResponse:
         response = await self.auth.request(
             "get",
-            DEVICES_PATH,
+            f'{self.host}/{_BASE_PATH}/{_DEVICES_PATH_SEGMENT}',
         )
         if response.status == 200:
-            return await response.json()
+            return from_dict(GetDevicesResponse, await response.json())
         else:
             raise ApiException("Response failure", response.status)
-
-    async def get_device_info(self, device_id: str):
-        response = await self.auth.request(
-            "get",
-            f'{DEVICES_PATH}/{device_id}',
-        )
-        if response.status == 200:
-            return await response.json()
-        else:
-            raise await _create_exception(response)
-
-    # async def generate_algopin_onetime(
-    #         self,
-    #         device_id: str,
-    #         variance: int,
-    #         start_date: str,
-    #         access_name: str
-    # ):
-    #     response = await self.auth.request(
-    #         method="get",
-    #         path=f'{DEVICES_PATH}/{device_id}/{ALGOPIN_PATH_SEGMENT}/onetime',
-    #         json={
-    #             "variance": variance,
-    #             "startDate": start_date,
-    #             "accessName": access_name
-    #         }
-    #     )
-    #     if response.status == 200:
-    #         return await response.json()
-    #     else:
-    #         raise await _create_exception(response)
 
 
 class ApiException(Exception):
