@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 pyjwt = "==2.9.0"
 dacite = "==1.8.1"
-aiohttp = "*"
+aiohttp = "==3.10.10"
 
 [dev-packages]
 
