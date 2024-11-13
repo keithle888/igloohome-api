@@ -1,4 +1,6 @@
 """Library for accessing igloohome API"""
+from typing import Optional
+
 from dacite import from_dict
 
 import aiohttp
@@ -29,7 +31,7 @@ class GetDeviceInfoResponse:
     pairedAt: str
     homeId: list[str]
     linkedDevices: list[LinkedDevice]
-    batteryLevel: int
+    batteryLevel: Optional[int]
 
 
 @dataclass
