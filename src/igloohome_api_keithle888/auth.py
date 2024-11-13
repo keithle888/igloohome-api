@@ -3,16 +3,17 @@ import jwt
 
 _OAUTH2_HOST = "https://auth.igloohome.co"
 _OAUTH2_TOKEN_PATH = "/oauth2/token"
+_OAUTH2_SCOPE_EVERYTHING = OAUTH2_SCOPE = "igloohomeapi/algopin-hourly igloohomeapi/algopin-daily igloohomeapi/algopin-permanent igloohomeapi/algopin-onetime igloohomeapi/create-pin-bridge-proxied-job igloohomeapi/delete-pin-bridge-proxied-job igloohomeapi/lock-bridge-proxied-job igloohomeapi/unlock-bridge-proxied-job igloohomeapi/get-devices igloohomeapi/get-job-status igloohomeapi/get-properties"
 
 
 class Auth:
     def __init__(
             self,
             session: aiohttp.ClientSession,
-            scope: str,
             client_id: str,
             client_secret: str,
             host: str = _OAUTH2_HOST,
+            scope: str = _OAUTH2_SCOPE_EVERYTHING,
     ) -> None:
         self.access_token = None
         self.session = session

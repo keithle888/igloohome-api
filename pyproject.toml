@@ -3,10 +3,10 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "iglooaccess_keithle888"
+name = "igloohome-api"
 version = "0.0.1"
 authors = [
-    { name="keithle888", email="" },
+    { name="keithle888", email="keithle888@gmail.com" },
 ]
 description = "A python package for iglooaccess' API"
 readme = "README.md"
