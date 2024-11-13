@@ -1,5 +1,4 @@
 """Library for accessing igloohome API"""
-from typing import Any
 from dacite import from_dict
 
 import aiohttp
@@ -14,21 +13,29 @@ _BASE_URL = "https://api.igloodeveloper.co"
 _BASE_PATH = "igloohome"
 _DEVICES_PATH_SEGMENT = "devices"
 
+
 @dataclass
-class GetDevicesResponsePayload:
+class LinkedDevice:
+    type: str
+    deviceId: str
+
+
+@dataclass
+class GetDeviceInfoResponse:
     id: str
     type: str
     deviceId: str
     deviceName: str
     pairedAt: str
-    homeId: Any
-    linkedDevices: Any
+    homeId: list[str]
+    linkedDevices: list[LinkedDevice]
 
 
 @dataclass
 class GetDevicesResponse:
     nextCursor: str
-    payload: list[GetDevicesResponsePayload]
+    payload: list[GetDeviceInfoResponse]
+
 
 class Auth:
     def __init__(
@@ -104,6 +111,7 @@ def is_access_token_valid(access_token: str) -> bool:
 class AuthException(Exception):
     pass
 
+
 class Api:
     def __init__(
             self,
@@ -120,6 +128,16 @@ class Api:
         )
         if response.status == 200:
             return from_dict(GetDevicesResponse, await response.json())
+        else:
+            raise ApiException("Response failure", response.status)
+
+    async def get_device_info(self, deviceId: str) -> GetDeviceInfoResponse:
+        response = await self.auth.request(
+            "get",
+            f'{self.host}/{_BASE_PATH}/{_DEVICES_PATH_SEGMENT}/{deviceId}',
+        )
+        if response.status == 200:
+            return from_dict(GetDeviceInfoResponse, await response.json())
         else:
             raise ApiException("Response failure", response.status)
 
