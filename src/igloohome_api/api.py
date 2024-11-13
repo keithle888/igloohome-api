@@ -3,8 +3,8 @@ import json
 import aiohttp
 from dacite import from_dict
 
-from src.igloohome_api_keithle888.auth import Auth
-from src.igloohome_api_keithle888.models.get_devices_response import GetDevicesResponse
+from src.igloohome_api.auth import Auth
+from src.igloohome_api.models.get_devices_response import GetDevicesResponse
 
 _BASE_URL = "https://api.igloodeveloper.co"
 _BASE_PATH = "igloohome"
