@@ -4,11 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "igloohome-api"
-version = "0.0.3"
+version = "0.0.4"
 authors = [
     { name="keithle888", email="keithle888@gmail.com" },
 ]
-description = "A python package for iglooaccess' API"
+description = "A python package for using igloohome's API"
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
