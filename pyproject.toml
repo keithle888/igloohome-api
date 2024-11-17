@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "igloohome-api"
-version = "0.0.4"
+version = "0.0.5"
 authors = [
     { name="keithle888", email="keithle888@gmail.com" },
 ]
@@ -19,7 +19,7 @@ classifiers = [
 dependencies = [
     "pyjwt~=2.9.0",
     "dacite~=1.8.1",
-    "aiohttp~=3.10.10"
+    "aiohttp~=3.11.2"
 ]
 
 [project.urls]
