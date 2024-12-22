@@ -40,6 +40,25 @@ class GetDevicesResponse:
     payload: list[GetDeviceInfoResponse]
 
 
+@dataclass
+class CreateBridgeProxiedJobResponse:
+    jobId: str
+
+
+BRIDGE_JOB_LOCK = 1
+BRIDGE_JOB_UNLOCK = 2
+BRIDGE_JOB_CREATE_CUSTOM_PIN = 4
+BRIDGE_JOB_DELETE_CUSTOM_PIN = 5
+BRIDGE_JOB_GET_BATTERY_LEVEL = 9
+BRIDGE_JOB_GET_DEVICE_STATUS = 10
+BRIDGE_JOB_GET_ACTIVITY_LOGS = 15
+
+@dataclass
+class GetJobStatusResponse:
+    jobStatus: int
+    jobResponse: dict
+
+
 class Auth:
     def __init__(
             self,
@@ -141,6 +160,36 @@ class Api:
         )
         if response.status == 200:
             return from_dict(GetDeviceInfoResponse, await response.json())
+        else:
+            raise ApiException("Response failure", response.status)
+
+    async def create_bridge_proxied_job(
+            self,
+            deviceId: str,
+            bridgeId: str,
+            jobType: int,
+            jobData: dict = None
+    ) -> CreateBridgeProxiedJobResponse:
+        response = await self.auth.request(
+            "post",
+            f'{self.host}/{_BASE_PATH}/{_DEVICES_PATH_SEGMENT}/{deviceId}/jobs/bridges/{bridgeId}',
+            json={
+                "jobType": jobType,
+                "jobData": jobData,
+            }
+        )
+        if response.status == 200:
+            return from_dict(CreateBridgeProxiedJobResponse, await response.json())
+        else:
+            raise ApiException("Response failure", response.status)
+
+    async def get_job_status(self, jobId: str) -> GetJobStatusResponse:
+        response = await self.auth.request(
+            "get",
+            f'{self.host}/{_BASE_PATH}/jobs/{jobId}'
+        )
+        if response.status == 200:
+            return from_dict(GetJobStatusResponse, await response.json())
         else:
             raise ApiException("Response failure", response.status)
 
