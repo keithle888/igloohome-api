@@ -9,7 +9,13 @@ from dataclasses import dataclass
 
 _OAUTH2_HOST = "https://auth.igloohome.co"
 _OAUTH2_TOKEN_PATH = "/oauth2/token"
-_OAUTH2_SCOPE_EVERYTHING = OAUTH2_SCOPE = "igloohomeapi/algopin-hourly igloohomeapi/algopin-daily igloohomeapi/algopin-permanent igloohomeapi/algopin-onetime igloohomeapi/create-pin-bridge-proxied-job igloohomeapi/delete-pin-bridge-proxied-job igloohomeapi/lock-bridge-proxied-job igloohomeapi/unlock-bridge-proxied-job igloohomeapi/get-devices igloohomeapi/get-job-status igloohomeapi/get-properties"
+_OAUTH2_SCOPE_EVERYTHING = OAUTH2_SCOPE = ("igloohomeapi/algopin-hourly igloohomeapi/algopin-daily "
+                                           "igloohomeapi/algopin-permanent igloohomeapi/algopin-onetime "
+                                           "igloohomeapi/create-pin-bridge-proxied-job "
+                                           "igloohomeapi/delete-pin-bridge-proxied-job "
+                                           "igloohomeapi/lock-bridge-proxied-job "
+                                           "igloohomeapi/unlock-bridge-proxied-job igloohomeapi/get-devices "
+                                           "igloohomeapi/get-job-status igloohomeapi/get-properties")
 
 _BASE_URL = "https://api.igloodeveloper.co"
 _BASE_PATH = "igloohome"
