@@ -51,6 +51,14 @@ class CreateBridgeProxiedJobResponse:
     jobId: str
 
 
+@dataclass
+class GetJobStatusResponse:
+    jobStatus: int
+    expiryDate: str
+    completed: bool
+    jobStatus: dict
+
+
 BRIDGE_JOB_LOCK = 1
 BRIDGE_JOB_UNLOCK = 2
 BRIDGE_JOB_CREATE_CUSTOM_PIN = 4
@@ -58,11 +66,6 @@ BRIDGE_JOB_DELETE_CUSTOM_PIN = 5
 BRIDGE_JOB_GET_BATTERY_LEVEL = 9
 BRIDGE_JOB_GET_DEVICE_STATUS = 10
 BRIDGE_JOB_GET_ACTIVITY_LOGS = 15
-
-@dataclass
-class GetJobStatusResponse:
-    jobStatus: int
-    jobResponse: dict
 
 
 class Auth:
