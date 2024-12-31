@@ -53,10 +53,11 @@ class CreateBridgeProxiedJobResponse:
 
 @dataclass
 class GetJobStatusResponse:
-    jobStatus: int
+    jobId: str
     expiryDate: str
     completed: bool
-    jobStatus: dict
+    jobType: str
+    jobResponse: dict
 
 
 BRIDGE_JOB_LOCK = 1
