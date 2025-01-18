@@ -68,6 +68,13 @@ BRIDGE_JOB_GET_BATTERY_LEVEL = 9
 BRIDGE_JOB_GET_DEVICE_STATUS = 10
 BRIDGE_JOB_GET_ACTIVITY_LOGS = 15
 
+"""One of the possible GetDeviceInfoResponse.type values."""
+DEVICE_TYPE_BRIDGE = "Bridge"
+"""One of the possible GetDeviceInfoResponse.type values."""
+DEVICE_TYPE_LOCK = "Lock"
+"""One of the possible GetDeviceInfoResponse.type values."""
+DEVICE_TYPE_KEYPAD = "Keypad"
+
 
 class Auth:
     def __init__(
