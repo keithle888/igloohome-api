@@ -9,7 +9,13 @@ from dataclasses import dataclass
 
 _OAUTH2_HOST = "https://auth.igloohome.co"
 _OAUTH2_TOKEN_PATH = "/oauth2/token"
-_OAUTH2_SCOPE_EVERYTHING = OAUTH2_SCOPE = "igloohomeapi/algopin-hourly igloohomeapi/algopin-daily igloohomeapi/algopin-permanent igloohomeapi/algopin-onetime igloohomeapi/create-pin-bridge-proxied-job igloohomeapi/delete-pin-bridge-proxied-job igloohomeapi/lock-bridge-proxied-job igloohomeapi/unlock-bridge-proxied-job igloohomeapi/get-devices igloohomeapi/get-job-status igloohomeapi/get-properties"
+_OAUTH2_SCOPE_EVERYTHING = OAUTH2_SCOPE = ("igloohomeapi/algopin-hourly igloohomeapi/algopin-daily "
+                                           "igloohomeapi/algopin-permanent igloohomeapi/algopin-onetime "
+                                           "igloohomeapi/create-pin-bridge-proxied-job "
+                                           "igloohomeapi/delete-pin-bridge-proxied-job "
+                                           "igloohomeapi/lock-bridge-proxied-job "
+                                           "igloohomeapi/unlock-bridge-proxied-job igloohomeapi/get-devices "
+                                           "igloohomeapi/get-job-status igloohomeapi/get-properties")
 
 _BASE_URL = "https://api.igloodeveloper.co"
 _BASE_PATH = "igloohome"
@@ -38,6 +44,36 @@ class GetDeviceInfoResponse:
 class GetDevicesResponse:
     nextCursor: str
     payload: list[GetDeviceInfoResponse]
+
+
+@dataclass
+class CreateBridgeProxiedJobResponse:
+    jobId: str
+
+
+@dataclass
+class GetJobStatusResponse:
+    jobId: str
+    expiryDate: str
+    completed: bool
+    jobType: str
+    jobResponse: dict
+
+
+BRIDGE_JOB_LOCK = 1
+BRIDGE_JOB_UNLOCK = 2
+BRIDGE_JOB_CREATE_CUSTOM_PIN = 4
+BRIDGE_JOB_DELETE_CUSTOM_PIN = 5
+BRIDGE_JOB_GET_BATTERY_LEVEL = 9
+BRIDGE_JOB_GET_DEVICE_STATUS = 10
+BRIDGE_JOB_GET_ACTIVITY_LOGS = 15
+
+"""One of the possible GetDeviceInfoResponse.type values."""
+DEVICE_TYPE_BRIDGE = "Bridge"
+"""One of the possible GetDeviceInfoResponse.type values."""
+DEVICE_TYPE_LOCK = "Lock"
+"""One of the possible GetDeviceInfoResponse.type values."""
+DEVICE_TYPE_KEYPAD = "Keypad"
 
 
 class Auth:
@@ -141,6 +177,36 @@ class Api:
         )
         if response.status == 200:
             return from_dict(GetDeviceInfoResponse, await response.json())
+        else:
+            raise ApiException("Response failure", response.status)
+
+    async def create_bridge_proxied_job(
+            self,
+            deviceId: str,
+            bridgeId: str,
+            jobType: int,
+            jobData: dict = None
+    ) -> CreateBridgeProxiedJobResponse:
+        response = await self.auth.request(
+            "post",
+            f'{self.host}/{_BASE_PATH}/{_DEVICES_PATH_SEGMENT}/{deviceId}/jobs/bridges/{bridgeId}',
+            json={
+                "jobType": jobType,
+                "jobData": jobData,
+            }
+        )
+        if response.status == 200:
+            return from_dict(CreateBridgeProxiedJobResponse, await response.json())
+        else:
+            raise ApiException("Response failure", response.status)
+
+    async def get_job_status(self, jobId: str) -> GetJobStatusResponse:
+        response = await self.auth.request(
+            "get",
+            f'{self.host}/{_BASE_PATH}/jobs/{jobId}'
+        )
+        if response.status == 200:
+            return from_dict(GetJobStatusResponse, await response.json())
         else:
             raise ApiException("Response failure", response.status)
 
