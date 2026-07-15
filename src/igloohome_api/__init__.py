@@ -21,8 +21,16 @@ _OAUTH2_SCOPE_EVERYTHING = OAUTH2_SCOPE = ("igloohomeapi/algopin-hourly igloohom
 _BASE_URL = "https://api.igloodeveloper.co"
 _BASE_PATH = "igloohome"
 _DEVICES_PATH_SEGMENT = "devices"
+
+# Helper function to normalize standard ISO formats for Python < 3.11
+def _parse_iso_datetime(val: str) -> datetime:
+    if val.endswith("Z"):
+        val = val[:-1] + "+00:00"
+    return datetime.fromisoformat(val)
+
+
 _GLOBAL_CONFIG = config = Config(type_hooks={
-    datetime: datetime.fromisoformat
+    datetime: _parse_iso_datetime
 })
 
 
