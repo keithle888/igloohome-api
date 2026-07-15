@@ -1,7 +1,8 @@
 """Library for accessing igloohome API"""
 from typing import Optional
 
-from dacite import from_dict
+from dacite import from_dict, Config
+from datetime import datetime
 
 import aiohttp
 import jwt
@@ -20,6 +21,9 @@ _OAUTH2_SCOPE_EVERYTHING = OAUTH2_SCOPE = ("igloohomeapi/algopin-hourly igloohom
 _BASE_URL = "https://api.igloodeveloper.co"
 _BASE_PATH = "igloohome"
 _DEVICES_PATH_SEGMENT = "devices"
+_GLOBAL_CONFIG = config = Config(type_hooks={
+    datetime: datetime.fromisoformat
+})
 
 
 @dataclass
@@ -38,6 +42,8 @@ class GetDeviceInfoResponse:
     homeId: list[str]
     linkedDevices: list[LinkedDevice]
     batteryLevel: Optional[int]
+    lastSync: Optional[datetime]
+    
 
 
 @dataclass
@@ -166,7 +172,7 @@ class Api:
             f'{self.host}/{_BASE_PATH}/{_DEVICES_PATH_SEGMENT}',
         )
         if response.status == 200:
-            return from_dict(GetDevicesResponse, await response.json())
+            return from_dict(GetDevicesResponse, await response.json(), config=_GLOBAL_CONFIG)
         else:
             raise ApiException("Response failure", response.status)
 
@@ -176,7 +182,7 @@ class Api:
             f'{self.host}/{_BASE_PATH}/{_DEVICES_PATH_SEGMENT}/{deviceId}',
         )
         if response.status == 200:
-            return from_dict(GetDeviceInfoResponse, await response.json())
+            return from_dict(GetDeviceInfoResponse, await response.json(), config=_GLOBAL_CONFIG)
         else:
             raise ApiException("Response failure", response.status)
 
