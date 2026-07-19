@@ -1,7 +1,8 @@
 """Library for accessing igloohome API"""
 from typing import Optional
 
-from dacite import from_dict
+from dacite import from_dict, Config
+from datetime import datetime
 
 import aiohttp
 import jwt
@@ -21,6 +22,17 @@ _BASE_URL = "https://api.igloodeveloper.co"
 _BASE_PATH = "igloohome"
 _DEVICES_PATH_SEGMENT = "devices"
 
+# Helper function to normalize standard ISO formats for Python < 3.11
+def _parse_iso_datetime(val: str) -> datetime:
+    if val.endswith("Z"):
+        val = val[:-1] + "+00:00"
+    return datetime.fromisoformat(val)
+
+
+_GLOBAL_CONFIG = config = Config(type_hooks={
+    datetime: _parse_iso_datetime
+})
+
 
 @dataclass
 class LinkedDevice:
@@ -38,6 +50,8 @@ class GetDeviceInfoResponse:
     homeId: list[str]
     linkedDevices: list[LinkedDevice]
     batteryLevel: Optional[int]
+    lastSync: datetime
+    
 
 
 @dataclass
@@ -166,7 +180,7 @@ class Api:
             f'{self.host}/{_BASE_PATH}/{_DEVICES_PATH_SEGMENT}',
         )
         if response.status == 200:
-            return from_dict(GetDevicesResponse, await response.json())
+            return from_dict(GetDevicesResponse, await response.json(), config=_GLOBAL_CONFIG)
         else:
             raise ApiException("Response failure", response.status)
 
@@ -176,7 +190,7 @@ class Api:
             f'{self.host}/{_BASE_PATH}/{_DEVICES_PATH_SEGMENT}/{deviceId}',
         )
         if response.status == 200:
-            return from_dict(GetDeviceInfoResponse, await response.json())
+            return from_dict(GetDeviceInfoResponse, await response.json(), config=_GLOBAL_CONFIG)
         else:
             raise ApiException("Response failure", response.status)
 
