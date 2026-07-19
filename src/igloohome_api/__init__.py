@@ -50,7 +50,7 @@ class GetDeviceInfoResponse:
     homeId: list[str]
     linkedDevices: list[LinkedDevice]
     batteryLevel: Optional[int]
-    lastSync: Optional[datetime]
+    lastSync: datetime
     
 
 
