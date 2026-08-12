@@ -47,7 +47,7 @@ class GetDeviceInfoResponse:
     deviceId: str
     deviceName: str
     pairedAt: str
-    homeId: list[str]
+    homeId: Optional[list[str]]
     linkedDevices: list[LinkedDevice]
     batteryLevel: Optional[int]
     lastSync: datetime
